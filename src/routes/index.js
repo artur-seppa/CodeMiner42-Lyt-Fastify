@@ -1,20 +1,19 @@
-// async function routes(fastify, options) {
-//     fastify.get('/', async (request, reply) => {
-//         return {
-//             status: 'ok',
-//             message: 'Servidor Fastify rodando!'
-//         };
-//     });
-// }
-
-// module.exports = routes;
+import { UrlController } from '../controllers/urlController.js';
 
 export function routerPlugin(fastify, options, done) {
-    fastify.get('/', async (request, reply) => {
-        reply.code(200).send({
-            status: 'ok',
-            message: 'Server is running'
-        });
+    const urlDatabase = fastify.urlDatabase;
+    const urlController = new UrlController(urlDatabase);
+
+    fastify.post('/', async (request, reply) => {
+        return urlController.createShortUrl(request, reply);
+    });
+
+    fastify.get('/:shortCode', async (request, reply) => {
+        return urlController.redirect(request, reply);
+    });
+
+    fastify.get('/:shortCode/visits', async (request, reply) => {
+        return urlController.visitsCounter(request, reply);
     });
 
     done();
