@@ -5,8 +5,10 @@ const fastify = Fastify({ logger: true });
 
 function createServer() {
     try {
-        fastify.register(routerPlugin);
+        const urlDatabase = {};
 
+        fastify.decorate('urlDatabase', urlDatabase);
+        fastify.register(routerPlugin);
         return fastify;
     } catch (err) {
         fastify.log.error(err);
