@@ -1,7 +1,7 @@
 import { beforeEach, afterAll, beforeAll, describe, it, expect } from 'vitest';
 import { createServer } from '../../src/server.js';
 
-describe('integration visits counter', () => {
+describe('integration admin delete url', () => {
     let server;
     let shortCode;
     const originalUrl = 'https://www.pcdf.df.gov.br/servicos/delegacia-eletronica';
@@ -27,53 +27,43 @@ describe('integration visits counter', () => {
         shortCode = shortUrl.split('/').pop();
     });
 
-    it.concurrent('should return the correct visit count when short code exists', async () => {
-        await server.inject({
-            method: 'GET',
-            url: `/${shortCode}`
-        });
-
+    it.concurrent('should delete a url of the list', async () => {
         const response = await server.inject({
-            method: 'GET',
-            url: `/${shortCode}/visits`
+            method: 'DELETE',
+            url: `/admin/urls/${shortCode}`
         });
 
         expect(response.statusCode).toEqual(200);
 
         const body = JSON.parse(response.body);
-        expect(body.visits).toBe(1);
+        expect(body.status).toBe('success');
+        expect(body.message).toBe('URL deleted successfully');
     });
 
-    it.concurrent('should return error when short code does not exist', async () => {
+    it.concurrent('should return an error when not exists any shortCode', async () => {
         const response = await server.inject({
-            method: 'GET',
-            url: `/blabla`
+            method: 'DELETE',
+            url: '/admin/urls/'
         });
-
-        const body = JSON.parse(response.body);
 
         expect(response.statusCode).toEqual(404);
 
-        expect(body.statusCode).toBe(404);
-        expect(body.code).toBe("RESOURCE_NOT_FOUND");
-        expect(body.error).toBe("Not Found");
-        expect(body.message).toBe("Short URL not found");
+        const body = JSON.parse(response.body);
+        expect(body.code).toBe('RESOURCE_NOT_FOUND');
+        expect(body.message).toBe('Short URL not found');
     });
 
-    it.concurrent('should return error when short code is empty', async () => {
+    it.concurrent('should return an error when pass a invalid shortCode', async () => {
         const response = await server.inject({
-            method: 'GET',
-            url: `/`
+            method: 'DELETE',
+            url: '/admin/urls/blabla'
         });
-
-        const body = JSON.parse(response.body);
 
         expect(response.statusCode).toEqual(404);
 
-        expect(body.statusCode).toBe(404);
-        expect(body.code).toBe("RESOURCE_NOT_FOUND");
-        expect(body.error).toBe("Not Found");
-        expect(body.message).toBe("Short URL not found");
+        const body = JSON.parse(response.body);
+        expect(body.code).toBe('RESOURCE_NOT_FOUND');
+        expect(body.message).toBe('Short URL not found');
     });
 
 });

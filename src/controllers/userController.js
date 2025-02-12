@@ -4,7 +4,7 @@ import { redirectToVisitsCounter } from '../service/redirectToVisitsCounter.js';
 
 import { ApplicationError, ERROR_CODES } from '../errors/applicationErro.js';
 
-export class UrlController {
+export class UserController {
     constructor(urlDatabase) {
         this.urlDatabase = urlDatabase;
     }

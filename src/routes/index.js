@@ -1,20 +1,9 @@
-import { UrlController } from '../controllers/urlController.js';
+import { userRoute } from './userRoute.js';
+import { adminRoute } from './adminRoute.js';
 
 export function routerPlugin(fastify, options, done) {
-    const urlDatabase = fastify.urlDatabase;
-    const urlController = new UrlController(urlDatabase);
-
-    fastify.post('/', async (request, reply) => {
-        return urlController.createShortUrl(request, reply);
-    });
-
-    fastify.get('/:shortCode', async (request, reply) => {
-        return urlController.redirect(request, reply);
-    });
-
-    fastify.get('/:shortCode/visits', async (request, reply) => {
-        return urlController.visitsCounter(request, reply);
-    });
+    fastify.register(userRoute, { prefix: '/' });
+    fastify.register(adminRoute, { prefix: '/admin' });
 
     done();
 }
