@@ -1,6 +1,6 @@
 import { UrlController } from '../controllers/urlController.js';
 
-export function routerPlugin(fastify, options, done) {
+export function urlRouterPlugin(fastify, options, done) {
     const urlDatabase = fastify.urlDatabase;
     const urlController = new UrlController(urlDatabase);
 

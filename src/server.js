@@ -1,5 +1,5 @@
 import Fastify from 'fastify';
-import { routerPlugin } from './routes/index.js';
+import { urlRouterPlugin } from './routes/index.js';
 
 const fastify = Fastify({ logger: true });
 
@@ -8,7 +8,7 @@ function createServer() {
         const urlDatabase = {};
 
         fastify.decorate('urlDatabase', urlDatabase);
-        fastify.register(routerPlugin);
+        fastify.register(urlRouterPlugin);
         return fastify;
     } catch (err) {
         fastify.log.error(err);
