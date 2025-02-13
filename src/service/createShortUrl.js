@@ -1,5 +1,5 @@
-import { encodeBase62 } from '../utils/base62.js';
-import { isValidUrl } from '../utils/isValidUrl.js';
+import { encodeBase62 } from './base62.js';
+import { isValidUrl } from './isValidUrl.js';
 
 export function createShortUrl(originalUrl, urlDatabase) {
     try {
