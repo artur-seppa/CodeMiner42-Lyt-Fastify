@@ -15,19 +15,23 @@ describe('integration visits counter', () => {
         await server.close();
     });
 
-    beforeEach(async () => {
-        const reponse = await server.inject({
+    async function createShortUrl() {
+        const originalUrl = 'https://www.pcdf.df.gov.br/servicos/delegacia-eletronica';
+
+        const response = await server.inject({
             method: 'POST',
             url: '/',
             payload: { url: originalUrl }
         });
 
-        const body = JSON.parse(reponse.body);
+        const body = JSON.parse(response.body);
         const shortUrl = body.shortUrl;
-        shortCode = shortUrl.split('/').pop();
-    });
+        return shortUrl.split('/').pop(); 
+    }
 
     it.concurrent('should return the correct visit count when short code exists', async () => {
+        const shortCode = await createShortUrl();
+
         await server.inject({
             method: 'GET',
             url: `/${shortCode}`
