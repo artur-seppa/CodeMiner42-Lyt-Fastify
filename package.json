@@ -21,6 +21,7 @@
   "homepage": "https://github.com/artur-seppa/CodeMiner42-Lyt-Fastify#readme",
   "dependencies": {
     "@fastify/cors": "^10.0.2",
+    "@fastify/jwt": "^9.0.4",
     "fastify": "^5.2.1"
   },
   "devDependencies": {
