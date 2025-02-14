@@ -3,8 +3,6 @@ import { createServer } from '../../src/server.js';
 
 describe('integration redirect to original url', () => {
     let server;
-    let shortCode;
-    const originalUrl = 'https://www.pcdf.df.gov.br/servicos/delegacia-eletronica';
 
     beforeAll(async () => {
         server = createServer();
@@ -15,20 +13,26 @@ describe('integration redirect to original url', () => {
         await server.close();
     });
 
-    beforeEach(async () => {
-        const reponse = await server.inject({
+    async function createShortUrl() {
+        const originalUrl = 'https://www.pcdf.df.gov.br/servicos/delegacia-eletronica';
+
+        const response = await server.inject({
             method: 'POST',
             url: '/',
             payload: { url: originalUrl }
         });
 
-        const body = JSON.parse(reponse.body);
+        const body = JSON.parse(response.body);
         const shortUrl = body.shortUrl;
-        shortCode = shortUrl.split('/').pop();
-    });
+        const shortCode = shortUrl.split('/').pop();
+
+        return { shortCode: shortCode, originalUrl: originalUrl };
+    }
 
     describe('redirect to original url', () => {
         it.concurrent('should redirect to original URL when short code exists', async () => {
+            const { shortCode, originalUrl } = await createShortUrl();
+
             const response = await server.inject({
                 method: 'GET',
                 url: `/${shortCode}`
