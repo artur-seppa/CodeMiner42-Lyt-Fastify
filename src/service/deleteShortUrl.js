@@ -1,22 +1,17 @@
 export function deleteShortUrl(urlId, urlDatabase) {
-    try {
-        const urlEntry = urlDatabase[urlId];
+    const urlEntry = urlDatabase[urlId];
 
-        if (!urlEntry) {
-            return {
-                status: 'error',
-                message: 'Short URL not found'
-            };
-        }
-
-        delete urlDatabase[urlId];
-
+    if (!urlEntry) {
         return {
-            status: 'success',
-            message: 'URL deleted successfully'
+            status: 'error',
+            message: 'Short URL not found'
         };
-        
-    } catch (error) {
-        throw new Error('Internal server error');
     }
+
+    delete urlDatabase[urlId];
+
+    return {
+        status: 'success',
+        message: 'URL deleted successfully'
+    };
 }

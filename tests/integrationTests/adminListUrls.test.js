@@ -13,18 +13,24 @@ describe('integration admin list urls', () => {
         await server.close();
     });
 
-    it.concurrent('should return the correct array of urls created', async () => {
+    async function createShortUrl() {
         const originalUrl = 'https://www.pcdf.df.gov.br/servicos/delegacia-eletronica';
 
-        const reponseCreate = await server.inject({
+        const response = await server.inject({
             method: 'POST',
             url: '/',
             payload: { url: originalUrl }
         });
 
-        const bodyCreate = JSON.parse(reponseCreate.body);
-        const shortUrl = bodyCreate.shortUrl;
+        const body = JSON.parse(response.body);
+        const shortUrl = body.shortUrl;
         const shortCode = shortUrl.split('/').pop();
+
+        return { shortCode: shortCode, originalUrl: originalUrl };
+    }
+
+    it.concurrent('should return the correct array of urls created', async () => {
+        const { shortCode, originalUrl } = await createShortUrl();
 
         const response = await server.inject({
             method: 'GET',
@@ -63,8 +69,6 @@ describe('integration admin list urls', () => {
         expect(response.statusCode).toEqual(400);
 
         const body = JSON.parse(response.body);
-        expect(body.statusCode).toBe(400)
-        expect(body.code).toBe('INVALID_INPUT')
         expect(body.message).toBe('Invalid sortBy parameter')
     });
 
@@ -77,8 +81,6 @@ describe('integration admin list urls', () => {
         expect(response.statusCode).toEqual(400);
 
         const body = JSON.parse(response.body);
-        expect(body.statusCode).toBe(400)
-        expect(body.code).toBe('INVALID_INPUT')
         expect(body.message).toBe('Invalid order parameter')
     });
 

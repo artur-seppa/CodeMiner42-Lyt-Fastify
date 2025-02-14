@@ -1,36 +1,51 @@
 import { listUrls } from '../service/listUrls.js';
 import { deleteShortUrl } from '../service/deleteShortUrl.js';
 
-import { ApplicationError, ERROR_CODES } from '../errors/applicationErro.js';
-
 export class AdminController {
     constructor(urlDatabase) {
         this.urlDatabase = urlDatabase;
     }
 
     async listUrls(request, reply) {
-        const { sortBy, order } = request.query;
-        const response = listUrls(sortBy, order, this.urlDatabase)
+        try {
+            const { sortBy, order } = request.query;
+            const response = listUrls(sortBy, order, this.urlDatabase)
 
-        if (response.status === 'error') {
-            throw new ApplicationError(ERROR_CODES.INVALID_INPUT, response.message);
+            if (response.status === 'error') {
+                reply.status(400).send({
+                    message: response.message
+                });
+            }
+
+            return reply.status(200).send({
+                response
+            });
+        } catch (error) {
+            return reply.status(500).send({
+                error
+            });
         }
 
-        return reply.status(200).send({
-            response
-        });
     }
 
     async deleteUrl(request, reply) {
-        const { shortCode } = request.params;
-        const response = deleteShortUrl(shortCode, this.urlDatabase);
+        try {
+            const { shortCode } = request.params;
+            const response = deleteShortUrl(shortCode, this.urlDatabase);
 
-        if (response.status === 'error') {
-            throw new ApplicationError(ERROR_CODES.RESOURCE_NOT_FOUND, response.message);
-        } else {
-            return reply.status(200).send({
-                status: response.status,
-                message: response.message
+            if (response.status === 'error') {
+                reply.status(404).send({
+                    message: response.message
+                });
+            } else {
+                return reply.status(200).send({
+                    status: response.status,
+                    message: response.message
+                });
+            }
+        } catch (error) {
+            return reply.status(500).send({
+                error
             });
         }
     }

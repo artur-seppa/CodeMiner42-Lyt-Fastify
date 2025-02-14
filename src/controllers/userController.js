@@ -14,7 +14,7 @@ export class UserController {
 
             if (response.status === 'error') {
                 reply.status(400).send({
-                    response: response.message
+                    message: response.message
                 });
             }
 
@@ -37,7 +37,7 @@ export class UserController {
 
             if (response.status === 'error') {
                 reply.status(404).send({
-                    response: response.message
+                    message: response.message
                 });
             } else {
                 reply
@@ -59,7 +59,7 @@ export class UserController {
 
             if (response.status === 'error') {
                 reply.status(404).send({
-                    response: response.message
+                    message: response.message
                 });
             } else {
                 return reply.status(200).send({ visits: response.visits });

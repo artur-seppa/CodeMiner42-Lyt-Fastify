@@ -57,10 +57,6 @@ describe('integration visits counter', () => {
         const body = JSON.parse(response.body);
 
         expect(response.statusCode).toEqual(404);
-
-        expect(body.statusCode).toBe(404);
-        expect(body.code).toBe("RESOURCE_NOT_FOUND");
-        expect(body.error).toBe("Not Found");
         expect(body.message).toBe("Short URL not found");
     });
 
@@ -73,10 +69,6 @@ describe('integration visits counter', () => {
         const body = JSON.parse(response.body);
 
         expect(response.statusCode).toEqual(404);
-
-        expect(body.statusCode).toBe(404);
-        expect(body.code).toBe("RESOURCE_NOT_FOUND");
-        expect(body.error).toBe("Not Found");
         expect(body.message).toBe("Short URL not found");
     });
 

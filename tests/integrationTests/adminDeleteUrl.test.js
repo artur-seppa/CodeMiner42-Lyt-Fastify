@@ -3,8 +3,6 @@ import { createServer } from '../../src/server.js';
 
 describe('integration admin delete url', () => {
     let server;
-    let shortCode;
-    const originalUrl = 'https://www.pcdf.df.gov.br/servicos/delegacia-eletronica';
 
     beforeAll(async () => {
         server = createServer();
@@ -15,19 +13,23 @@ describe('integration admin delete url', () => {
         await server.close();
     });
 
-    beforeEach(async () => {
-        const reponse = await server.inject({
+    async function createShortUrl() {
+        const originalUrl = 'https://www.pcdf.df.gov.br/servicos/delegacia-eletronica';
+
+        const response = await server.inject({
             method: 'POST',
             url: '/',
             payload: { url: originalUrl }
         });
 
-        const body = JSON.parse(reponse.body);
+        const body = JSON.parse(response.body);
         const shortUrl = body.shortUrl;
-        shortCode = shortUrl.split('/').pop();
-    });
+        return shortUrl.split('/').pop();
+    }
 
     it.concurrent('should delete a url of the list', async () => {
+        const shortCode = await createShortUrl();
+
         const response = await server.inject({
             method: 'DELETE',
             url: `/admin/urls/${shortCode}`
@@ -49,7 +51,6 @@ describe('integration admin delete url', () => {
         expect(response.statusCode).toEqual(404);
 
         const body = JSON.parse(response.body);
-        expect(body.code).toBe('RESOURCE_NOT_FOUND');
         expect(body.message).toBe('Short URL not found');
     });
 
@@ -62,7 +63,6 @@ describe('integration admin delete url', () => {
         expect(response.statusCode).toEqual(404);
 
         const body = JSON.parse(response.body);
-        expect(body.code).toBe('RESOURCE_NOT_FOUND');
         expect(body.message).toBe('Short URL not found');
     });
 
